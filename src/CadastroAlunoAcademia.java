@@ -9,11 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 //Leandro Felix e João Marcos
+
 public class CadastroAlunoAcademia {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Cadastro de Aluno de Academia");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
+        frame.setSize(500, 500);
 
         // Painel principal
         JPanel panel = new JPanel();
