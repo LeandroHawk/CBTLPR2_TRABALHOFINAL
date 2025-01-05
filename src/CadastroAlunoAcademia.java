@@ -95,7 +95,7 @@ public class CadastroAlunoAcademia {
             }
         });
 
-        // Ação do botão Apresentar Dados
+        // Ação do botão Apresentar Dados (com conversão para JSON)
         btnApresentar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,13 +106,11 @@ public class CadastroAlunoAcademia {
                             "*Consagrado712"
                     );
         
-                    String query = "SELECT nome, idade, peso, altura, objetivo FROM alunos";
+                    String query = "SELECT * FROM alunos";
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet resultSet = preparedStatement.executeQuery();
         
                     StringBuilder result = new StringBuilder();
-                    result.append("Nome | Idade | Peso | Altura | Objetivo\n");
-                    result.append("---------------------------------------\n");
         
                     while (resultSet.next()) {
                         String nome = resultSet.getString("nome");
@@ -121,17 +119,34 @@ public class CadastroAlunoAcademia {
                         float altura = resultSet.getFloat("altura");
                         String objetivo = resultSet.getString("objetivo");
         
-                        result.append(String.format("%s | %d | %.2f | %.2f | %s\n", nome, idade, peso, altura, objetivo));
+                        // Construindo um objeto JSON para cada aluno
+                        String alunoJson = String.format(
+                                "{\n  \"nome\": \"%s\",\n  \"idade\": %d,\n  \"peso\": %.2f,\n  \"altura\": %.2f,\n  \"objetivo\": \"%s\"\n}",
+                                nome, idade, peso, altura, objetivo
+                        );
+        
+                        // Adicionando o objeto JSON ao resultado
+                        result.append(alunoJson).append(",\n");
                     }
         
-                    JOptionPane.showMessageDialog(frame, result.toString(), "Dados dos Alunos", JOptionPane.INFORMATION_MESSAGE);
+                    // Remover a última vírgula e newline
+                    if (result.length() > 0) {
+                        result.setLength(result.length() - 2);  // Remove a última vírgula
+                    }
+        
+                    // Exibir os dados no formato JSON dentro de um JTextArea
+                    JTextArea textArea = new JTextArea(result.toString());
+                    textArea.setEditable(false);
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    scrollPane.setPreferredSize(new Dimension(400, 300));
+        
+                    JOptionPane.showMessageDialog(frame, scrollPane, "Dados dos Alunos", JOptionPane.INFORMATION_MESSAGE);
                     connection.close();
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(frame, "Erro ao conectar ao banco de dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        });        
-        
+        });
 
         // Ação do botão Limpar
         btnLimpar.addActionListener(new ActionListener() {
